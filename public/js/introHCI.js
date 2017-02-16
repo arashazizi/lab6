@@ -25,14 +25,40 @@ function addProjectDetails(e) {
 	var projectID = $(this).closest('.project').attr('id');
 	// get rid of 'project' from the front of the id 'project3'
 	var idNumber = projectID.substr('project'.length);
-
+	var info = $.get("/project/"+idNumber, addDetails);
+	
 	console.log("User clicked on project " + idNumber);
+	console.log("/project/" + idNumber);
 }
+
+function addDetails(result){
+	console.log($("#project" + result['id']).find(".details").length);
+	console.log(result);
+	var projectHTML = '<a href=# class="thumbnail">' + 
+					  '<img src="' + result['image'] + '"class="detailsImage">' +
+					  '<p>' + result['title'] + '</p>' +
+					  '<p><small>' + result['date'] + '</small></p>' + 
+					  '<p><small>' + result['summary'] + '</small></p></a>';
+	$("#project" + result['id']).find(".details").html(projectHTML);
+}
+
+
+function colorDetails (result) {
+	var resultColor = result['colors'];
+	var colors = resultColor['hex'];
+    $('body').css('background-color', colors[0]);
+    $('.thumbnail').css('background-color', colors[1]);
+    $('h1, h2, h3, h4, h5, h5').css('color', colors[2]);
+    $('p').css('color', colors[3]);
+    $('.project img').css('opacity', .75);
+}
+
 
 /*
  * Make an AJAX call to retrieve a color palette for the site
  * and apply it
  */
 function randomizeColors(e) {
+	$.get("/palette", colorDetails);
 	console.log("User clicked on color button");
 }
